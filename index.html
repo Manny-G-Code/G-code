@@ -8,17 +8,25 @@
 </head>
 <body>
     <div class="container">
-        <h1>G-Code Generator for a Door</h1>
+        <header>
+            <h1>G-Code Generator</h1>
+            <p>Generate G-Code for a door with specified dimensions</p>
+        </header>
         
-        <label for="width">Door Width (x):</label>
-        <input type="number" id="width" placeholder="Enter width">
+        <section class="input-section">
+            <label for="width">Door Width (x):</label>
+            <input type="number" id="width" placeholder="Enter door width">
+            
+            <label for="height">Door Height (y):</label>
+            <input type="number" id="height" placeholder="Enter door height">
+            
+            <button onclick="generateGCode()">Generate G-Code</button>
+        </section>
         
-        <label for="height">Door Height (y):</label>
-        <input type="number" id="height" placeholder="Enter height">
-        
-        <button onclick="generateGCode()">Generate G-Code</button>
-        
-        <pre id="gcode-output" class="output"></pre>
+        <section class="output-section">
+            <h2>Generated G-Code:</h2>
+            <pre id="gcode-output" class="output"></pre>
+        </section>
     </div>
 
     <script src="script.js"></script>
