@@ -1,13 +1,13 @@
 function showSection(section) {
     // Hide both sections by default
-    document.getElementById('door-section').style.display = 'none';
-    document.getElementById('tray-section').style.display = 'none';
+    document.getElementById('door-section').classList.add('hidden');
+    document.getElementById('tray-section').classList.add('hidden');
     
     // Show the selected section
     if (section === 'door') {
-        document.getElementById('door-section').style.display = 'block';
+        document.getElementById('door-section').classList.remove('hidden');
     } else if (section === 'tray') {
-        document.getElementById('tray-section').style.display = 'block';
+        document.getElementById('tray-section').classList.remove('hidden');
     }
 }
 
@@ -54,40 +54,30 @@ function door1lockfunc(x, y) {
         `G17\n` +
         `S1000\n\n` +
         `(GO TO START)\n` +
-        `G0 X${lx1}. Y${ly1}.\n\n` +
+        `G0 X${lx1} Y${ly1}\n` +
         `(START CUTTING)\n` +
-        `G0 Z1.0\n` +
-        `M3\n` +
-        `G1 F300.0 Z-0.4\n` +
-        `F2100.0\n\n` +
+        `G0 Z1.0\nM3\nG1 F300.0 Z-0.4\nF2100.0\n\n` +
         `(COORDINATES)\n` +
-        `G1 X${lx2}. Y${ly1}.\n` +
-        `G1 X${lx2}. Y${ly2}.\n` +
-        `G1 X${lx1}. Y${ly2}.\n` +
-        `G1 X${lx1}. Y${ly1}.\n\n` +
-        `(STOP CUTTING)\n` +
-        `M5\n` +
-        `G0 Z10.0\n\n` +
-        `(GO TO START)\n` +
-        `G0 X${p0}. Y${p1}.\n\n` +
-        `(START CUTTING)\n` +
-        `G0 Z1.0\n` +
-        `M3\n` +
-        `G1 F300.0 Z-0.4\n` +
-        `F2100.0\n\n` +
+        `G1 X${lx2} Y${ly1}\n` +
+        `G1 X${lx2} Y${ly2}\n` +
+        `G1 X${lx1} Y${ly2}\n` +
+        `G1 X${lx1} Y${ly1}\n\n` +
+        `(STOP CUTTING)\nM5\nG0 Z10.0\n\n` +
+        `(GO TO START)\nG0 X${p0} Y${p1}\n` +
+        `(START CUTTING)\nG0 Z1.0\nM3\nG1 F300.0 Z-0.4\nF2100.0\n\n` +
         `(COORDINATES)\n` +
-        `G1 X${p2}. Y${p1}.\n` +
-        `G1 X${p2}. Y${p0}.\n` +
-        `G1 X${x1}. Y${p0}.\n` +
-        `G1 X${x1}. Y${p1}.\n` +
-        `G1 X${x2}. Y${p1}.\n` +
-        `G1 X${x2}. Y${y1}.\n` +
-        `G1 X${x1}. Y${y1}.\n` +
-        `G1 X${x1}. Y${y2}.\n` +
-        `G1 X${p2}. Y${y2}.\n` +
-        `G1 X${p2}. Y${y1}.\n` +
-        `G1 X${p0}. Y${y1}.\n` +
-        `G1 X${p0}. Y${p1}.`);
+        `G1 X${p2} Y${p1}\n` +
+        `G1 X${p2} Y${p0}\n` +
+        `G1 X${x1} Y${p0}\n` +
+        `G1 X${x1} Y${p1}\n` +
+        `G1 X${x2} Y${p1}\n` +
+        `G1 X${x2} Y${y1}\n` +
+        `G1 X${x1} Y${y1}\n` +
+        `G1 X${x1} Y${y2}\n` +
+        `G1 X${p2} Y${y2}\n` +
+        `G1 X${p2} Y${y1}\n` +
+        `G1 X${p0} Y${y1}\n` +
+        `G1 X${p0} Y${p1}`);
 }
 
 function door2lockfunc(x, y) {
@@ -113,83 +103,53 @@ function door2lockfunc(x, y) {
         `G21 G90 G49 G64 G40\n` +
         `G17\n` +
         `S1000\n\n` +
-        `(GO TO START)\n` +
-        `G0 X${lock_x1}. Y${lock1_y1}.\n\n` +
-        `(START CUTTING)\n` +
-        `G0 Z1.0\n` +
-        `M3\n` +
-        `G1 F300.0 Z-0.4\n` +
-        `F2100.0\n\n` +
+        `(GO TO START)\nG0 X${lock_x1} Y${lock1_y1}\n` +
+        `(START CUTTING)\nG0 Z1.0\nM3\nG1 F300.0 Z-0.4\nF2100.0\n\n` +
         `(COORDINATES)\n` +
-        `G1 X${lock_x2}. Y${lock1_y1}.\n` +
-        `G1 X${lock_x2}. Y${lock1_y2}.\n` +
-        `G1 X${lock_x1}. Y${lock1_y2}.\n` +
-        `G1 X${lock_x1}. Y${lock1_y1}.\n\n` +
-        `(STOP CUTTING)\n` +
-        `M5\n` +
-        `G0 Z10.0\n\n` +
-        `(GO TO START)\n` +
-        `G0 X${lock_x1}. Y${lock2_y1}.\n\n` +
-        `(START CUTTING)\n` +
-        `G0 Z1.0\n` +
-        `M3\n` +
-        `G1 F300.0 Z-0.4\n` +
-        `F2100.0\n\n` +
+        `G1 X${lock_x2} Y${lock1_y1}\n` +
+        `G1 X${lock_x2} Y${lock1_y2}\n` +
+        `G1 X${lock_x1} Y${lock1_y2}\n` +
+        `G1 X${lock_x1} Y${lock1_y1}\n\n` +
+        `(STOP CUTTING)\nM5\nG0 Z10.0\n\n` +
+        `(GO TO START)\nG0 X${lock_x1} Y${lock2_y1}\n` +
+        `(START CUTTING)\nG0 Z1.0\nM3\nG1 F300.0 Z-0.4\nF2100.0\n\n` +
         `(COORDINATES)\n` +
-        `G1 X${lock_x2}. Y${lock2_y1}.\n` +
-        `G1 X${lock_x2}. Y${lock2_y2}.\n` +
-        `G1 X${lock_x1}. Y${lock2_y2}.\n` +
-        `G1 X${lock_x1}. Y${lock2_y1}.\n\n` +
-        `(STOP CUTTING)\n` +
-        `M5\n` +
-        `G0 Z10.0\n\n` +
-        `(GO TO START)\n` +
-        `G0 X${p0}. Y${p1}.\n\n` +
-        `(START CUTTING)\n` +
-        `G0 Z1.0\n` +
-        `M3\n` +
-        `G1 F300.0 Z-0.4\n` +
-        `F2100.0\n\n` +
+        `G1 X${lock_x2} Y${lock2_y1}\n` +
+        `G1 X${lock_x2} Y${lock2_y2}\n` +
+        `G1 X${lock_x1} Y${lock2_y2}\n` +
+        `G1 X${lock_x1} Y${lock2_y1}\n\n` +
+        `(STOP CUTTING)\nM5\nG0 Z10.0\n\n` +
+        `(GO TO START)\nG0 X${p0} Y${p1}\n` +
+        `(START CUTTING)\nG0 Z1.0\nM3\nG1 F300.0 Z-0.4\nF2100.0\n\n` +
         `(COORDINATES)\n` +
-        `G1 X${p2}. Y${p1}.\n` +
-        `G1 X${p2}. Y${p0}.\n` +
-        `G1 X${x1}. Y${p0}.\n` +
-        `G1 X${x1}. Y${p1}.\n` +
-        `G1 X${x2}. Y${p1}.\n` +
-        `G1 X${x2}. Y${y1}.\n` +
-        `G1 X${x1}. Y${y1}.\n` +
-        `G1 X${x1}. Y${y2}.\n` +
-        `G1 X${p2}. Y${y2}.\n` +
-        `G1 X${p2}. Y${y1}.\n` +
-        `G1 X${p0}. Y${y1}.\n` +
-        `G1 X${p0}. Y${p1}.`);
+        `G1 X${p2} Y${p1}\n` +
+        `G1 X${p2} Y${p0}\n` +
+        `G1 X${x1} Y${p0}\n` +
+        `G1 X${x1} Y${p1}\n` +
+        `G1 X${x2} Y${p1}\n` +
+        `G1 X${x2} Y${y1}\n` +
+        `G1 X${x1} Y${y1}\n` +
+        `G1 X${x1} Y${y2}\n` +
+        `G1 X${p2} Y${y2}\n` +
+        `G1 X${p2} Y${y1}\n` +
+        `G1 X${p0} Y${y1}\n` +
+        `G1 X${p0} Y${p1}`);
 }
 
 function trayfunc(x, y) {
-    const t1 = 50;
-    const t2 = t1 * 2;
-
-    const tray_flat_size_x = x + t1 * 2;
-    const tray_flat_size_y = y + t2 * 2;
+    const tray_flat_size_x = x + 10; // Example offset
+    const tray_flat_size_y = y + 10; // Example offset
 
     return sprintf(`(MANNY G-CODE FOR TRAY)\n\n` +
         `G21 G90 G49 G64 G40\n` +
         `G17\n` +
         `S1000\n\n` +
-        `(GO TO START)\n` +
-        `G0 X0 Y0\n` +
-        `G0 Z1.0\n` +
-        `M3\n` +
-        `G1 F300.0 Z-0.4\n` +
-        `F2100.0\n\n` +
-        `(COORDINATES)\n` +
-        `G1 X${tray_flat_size_x} Y0\n` +
+        `(GO TO START)\nG0 X0 Y0\nG0 Z1.0\nM3\nG1 F300.0 Z-0.4\nF2100.0\n\n` +
+        `(COORDINATES)\nG1 X${tray_flat_size_x} Y0\n` +
         `G1 X${tray_flat_size_x} Y${tray_flat_size_y}\n` +
         `G1 X0 Y${tray_flat_size_y}\n` +
         `G1 X0 Y0\n\n` +
-        `(STOP CUTTING)\n` +
-        `M5\n` +
-        `G0 Z10.0\n\n` +
+        `(STOP CUTTING)\nM5\nG0 Z10.0\n\n` +
         `(END)\n`);
 }
 
