@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G-Code Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>G-Code Generator for a Door</h1>
+        
+        <label for="width">Door Width (x):</label>
+        <input type="number" id="width" placeholder="Enter width">
+        
+        <label for="height">Door Height (y):</label>
+        <input type="number" id="height" placeholder="Enter height">
+        
+        <button onclick="generateGCode()">Generate G-Code</button>
+        
+        <pre id="gcode-output" class="output"></pre>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
