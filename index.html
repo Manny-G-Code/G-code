@@ -4,95 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>G-Code Generator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-        }
-        h1 {
-            color: #333;
-        }
-        .section {
-            background: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        label {
-            display: block;
-            margin: 10px 0 5px;
-        }
-        input[type="number"] {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            padding: 10px 15px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        #gcode-output {
-            white-space: pre-wrap; /* To preserve formatting */
-            background-color: #e9ecef;
-            padding: 10px;
-            border-radius: 4px;
-            margin-top: 10px;
-            max-height: 300px;
-            overflow-y: auto; /* Add scroll if content exceeds height */
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <h1>G-Code Generator</h1>
+    <div>
+        <button onclick="showSection('door')">Generate Door G-Code</button>
+        <button onclick="showSection('tray')">Generate Tray G-Code</button>
+    </div>
 
-<h1>G-Code Generator</h1>
+    <div id="door-section" class="hidden">
+        <h2>Door Specifications</h2>
+        <label for="door-width">Width:</label>
+        <input type="number" id="door-width" required>
+        <label for="door-height">Height:</label>
+        <input type="number" id="door-height" required>
+        <label for="num-locks">Number of Locks:</label>
+        <select id="num-locks">
+            <option value="1">1</option>
+            <option value="2">2</option>
+        </select>
+        <button onclick="generateGCode('door')">Generate G-Code</button>
+    </div>
 
-<div>
-    <button onclick="showSection('door')">Door</button>
-    <button onclick="showSection('tray')">Tray</button>
-</div>
+    <div id="tray-section" class="hidden">
+        <h2>Tray Specifications</h2>
+        <label for="tray-length">Length:</label>
+        <input type="number" id="tray-length" required>
+        <label for="tray-width">Width:</label>
+        <input type="number" id="tray-width" required>
+        <button onclick="generateGCode('tray')">Generate G-Code</button>
+    </div>
 
-<div id="door-section" class="section">
-    <h2>Door G-Code Generator</h2>
-    <label for="door-width">Width (mm):</label>
-    <input type="number" id="door-width" placeholder="Enter door width" required>
-    
-    <label for="door-height">Height (mm):</label>
-    <input type="number" id="door-height" placeholder="Enter door height" required>
-    
-    <label for="num-locks">Number of Locks:</label>
-    <select id="num-locks">
-        <option value="1">1 Lock</option>
-        <option value="2">2 Locks</option>
-    </select>
-    
-    <button onclick="generateGCode('door')">Generate G-Code</button>
-</div>
+    <h2>Generated G-Code</h2>
+    <pre id="gcode-output"></pre>
 
-<div id="tray-section" class="section" style="display: none;">
-    <h2>Tray G-Code Generator</h2>
-    <label for="tray-length">Length (mm):</label>
-    <input type="number" id="tray-length" placeholder="Enter tray length" required>
-    
-    <label for="tray-width">Width (mm):</label>
-    <input type="number" id="tray-width" placeholder="Enter tray width" required>
-    
-    <button onclick="generateGCode('tray')">Generate G-Code</button>
-</div>
-
-<h2>Generated G-Code</h2>
-<div id="gcode-output"></div>
-
-<script src="gcode-generator.js"></script> <!-- Make sure this points to the JavaScript file -->
+    <script src="gcode-generator.js"></script>
 </body>
 </html>
