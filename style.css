@@ -1,59 +1,98 @@
 /* style.css */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-color: #f5f5f5;
+    color: #333;
 }
 
 .container {
-    max-width: 500px;
+    max-width: 600px;
+    width: 100%;
     padding: 20px;
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
 }
 
-h1 {
+header {
     text-align: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: 1.8em;
+    color: #4CAF50;
+}
+
+header p {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.input-section {
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: 15px;
+    margin-bottom: 20px;
 }
 
 label {
-    display: block;
-    margin-top: 10px;
+    font-weight: bold;
+    color: #444;
 }
 
 input {
     width: 100%;
-    padding: 8px;
-    margin-top: 5px;
+    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    margin-top: 5px;
 }
 
 button {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    margin-top: 15px;
+    font-size: 1em;
 }
 
 button:hover {
     background-color: #45a049;
 }
 
-.output {
+.output-section {
     margin-top: 20px;
-    padding: 10px;
-    background-color: #f4f4f4;
+}
+
+.output-section h2 {
+    font-size: 1.2em;
+    color: #333;
+}
+
+.output {
+    margin-top: 10px;
+    padding: 15px;
+    background-color: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 4px;
+    max-height: 300px; /* Allows scrolling if the content is too long */
+    overflow-y: auto;
+    font-family: monospace;
     white-space: pre-wrap;
 }
