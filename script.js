@@ -1,228 +1,202 @@
-let generatedGCode = "";
-let currentComponent = "door";
-
-function showSection(component) {
-    currentComponent = component;
-    document.getElementById('door-section').style.display = component === "door" ? "block" : "none";
-    document.getElementById('tray-section').style.display = component === "tray" ? "block" : "none";
-    document.getElementById('gcode-output').textContent = ""; // Clear previous output
-    generatedGCode = ""; // Reset G-code
+function showSection(section) {
+    // Hide both sections by default
+    document.getElementById('door-section').style.display = 'none';
+    document.getElementById('tray-section').style.display = 'none';
+    
+    // Show the selected section
+    if (section === 'door') {
+        document.getElementById('door-section').style.display = 'block';
+    } else if (section === 'tray') {
+        document.getElementById('tray-section').style.display = 'block';
+    }
 }
 
-function generateGCode(component) {
-    let x, y;
+function generateGCode(type) {
+    let gcode = '';
+    if (type === 'door') {
+        const width = parseFloat(document.getElementById('door-width').value);
+        const height = parseFloat(document.getElementById('door-height').value);
+        const numLocks = parseInt(document.getElementById('num-locks').value);
 
-    // Validate and retrieve input values based on the selected component
-    if (component === "door") {
-        x = parseFloat(document.getElementById('door-width').value);
-        y = parseFloat(document.getElementById('door-height').value);
-
-        if (isNaN(x) || isNaN(y) || x <= 0 || y <= 0) {
-            alert("Please enter valid numbers for door width and height.");
-            return;
+        if (numLocks === 1) {
+            gcode = door1lockfunc(width, height);
+        } else if (numLocks === 2) {
+            gcode = door2lockfunc(width, height);
         }
-
-        // Get the number of locks
-        let numLocks = parseInt(document.getElementById('num-locks').value);
-        // Generate G-code for door with appropriate lock function
-        generatedGCode = numLocks === 1 ? generateDoorGCode(x, y) : generateDoor2LockGCode(x, y);
-    } else if (component === "tray") {
-        x = parseFloat(document.getElementById('tray-length').value);
-        y = parseFloat(document.getElementById('tray-width').value);
-
-        if (isNaN(x) || isNaN(y) || x <= 0 || y <= 0) {
-            alert("Please enter valid numbers for tray length and width.");
-            return;
-        }
-
-        // Generate G-code for tray
-        generatedGCode = generateTrayGCode(x, y);
+    } else if (type === 'tray') {
+        const length = parseFloat(document.getElementById('tray-length').value);
+        const width = parseFloat(document.getElementById('tray-width').value);
+        gcode = trayfunc(length, width);
     }
 
-    // Display the generated G-code
-    document.getElementById('gcode-output').textContent = generatedGCode;
+    // Display the generated G-Code
+    document.getElementById('gcode-output').textContent = gcode;
 }
 
-function generateDoorGCode(x, y) {
-    // G-code generation logic for a door with 1 lock
-    let p0 = 0;
-    let p1 = 22;
-    let p2 = 35;
+function door1lockfunc(x, y) {
+    const p0 = 0;
+    const p1 = 22;
+    const p2 = 35;
 
-    let x1 = x - 5 + 55 - 22;
-    let y1 = y - 5 + 40 - 22;
-    let x2 = x - 5 + 55;
-    let y2 = y - 5 + 40;
+    const x1 = x - 5 + 55 - 22;
+    const y1 = y - 5 + 40 - 22;
+    const x2 = x - 5 + 55;
+    const y2 = y - 5 + 40;
 
-    let lock_center = 120;
-    let lock_x1 = 75;
-    let lock_x2 = 75 + 95;
-    let lock_y1 = lock_center - 18;
-    let lock_y2 = lock_center + 18;
+    const lyc = Math.floor(y2 / 2);
+    const lx1 = 75;
+    const lx2 = 75 + 95;
+    const ly1 = lyc - 18;
+    const ly2 = lyc + 18;
 
-    return `(MANNY G-CODE)\n\n` +
-           `G21 G90 G49 G64 G40\n` +
-           `G17\n` +
-           `S1000\n\n` +
-           `(GO TO START)\n` +
-           `G0 X${lock_x1}. Y${lock_y1}.\n\n` +
-           `(START CUTTING)\n` +
-           `G0 Z1.0\n` +
-           `M3\n` +
-           `G1 F300.0 Z-0.4\n` +
-           `F2100.0\n\n` +
-           `(COORDINATES)\n` +
-           `G1 X${lock_x2}. Y${lock_y1}.\n` +
-           `G1 X${lock_x2}. Y${lock_y2}.\n` +
-           `G1 X${lock_x1}. Y${lock_y2}.\n` +
-           `G1 X${lock_x1}. Y${lock_y1}.\n\n` +
-           `(STOP CUTTING)\n` +
-           `M5\n` +
-           `G0 Z10.0\n\n` +
-           `(GO TO START)\n` +
-           `G0 X${p0}. Y${p1}.\n\n` +
-           `(START CUTTING)\n` +
-           `G0 Z1.0\n` +
-           `M3\n` +
-           `G1 F300.0 Z-0.4\n` +
-           `F2100.0\n\n` +
-           `(COORDINATES)\n` +
-           `G1 X${p2}. Y${p1}.\n` +
-           `G1 X${p2}. Y${p0}.\n` +
-           `G1 X${x1}. Y${p0}.\n` +
-           `G1 X${x1}. Y${p1}.\n` +
-           `G1 X${x2}. Y${p1}.\n` +
-           `G1 X${x2}. Y${y1}.\n` +
-           `G1 X${x2}. Y${y2}.\n` +
-           `G1 X${x1}. Y${y2}.\n` +
-           `G1 X${x1}. Y${y1}.\n\n` +
-           `(STOP CUTTING)\n` +
-           `M5\n` +
-           `G0 Z10.0\n`;
+    return sprintf(`(MANNY G-CODE)\n\n` +
+        `G21 G90 G49 G64 G40\n` +
+        `G17\n` +
+        `S1000\n\n` +
+        `(GO TO START)\n` +
+        `G0 X${lx1}. Y${ly1}.\n\n` +
+        `(START CUTTING)\n` +
+        `G0 Z1.0\n` +
+        `M3\n` +
+        `G1 F300.0 Z-0.4\n` +
+        `F2100.0\n\n` +
+        `(COORDINATES)\n` +
+        `G1 X${lx2}. Y${ly1}.\n` +
+        `G1 X${lx2}. Y${ly2}.\n` +
+        `G1 X${lx1}. Y${ly2}.\n` +
+        `G1 X${lx1}. Y${ly1}.\n\n` +
+        `(STOP CUTTING)\n` +
+        `M5\n` +
+        `G0 Z10.0\n\n` +
+        `(GO TO START)\n` +
+        `G0 X${p0}. Y${p1}.\n\n` +
+        `(START CUTTING)\n` +
+        `G0 Z1.0\n` +
+        `M3\n` +
+        `G1 F300.0 Z-0.4\n` +
+        `F2100.0\n\n` +
+        `(COORDINATES)\n` +
+        `G1 X${p2}. Y${p1}.\n` +
+        `G1 X${p2}. Y${p0}.\n` +
+        `G1 X${x1}. Y${p0}.\n` +
+        `G1 X${x1}. Y${p1}.\n` +
+        `G1 X${x2}. Y${p1}.\n` +
+        `G1 X${x2}. Y${y1}.\n` +
+        `G1 X${x1}. Y${y1}.\n` +
+        `G1 X${x1}. Y${y2}.\n` +
+        `G1 X${p2}. Y${y2}.\n` +
+        `G1 X${p2}. Y${y1}.\n` +
+        `G1 X${p0}. Y${y1}.\n` +
+        `G1 X${p0}. Y${p1}.`);
 }
 
-function generateDoor2LockGCode(x, y) {
-    // G-code generation logic for a door with 2 locks
-    let final_door_size_x = x;
-    let final_door_size_y = y;
+function door2lockfunc(x, y) {
+    const p0 = 0;
+    const p1 = 22;
+    const p2 = 35;
 
-    let p0 = 0;
-    let p1 = 22;
-    let p2 = 35;
+    const x1 = x - 5 + 55 - 22;
+    const y1 = y - 5 + 40 - 22;
+    const x2 = x - 5 + 55;
+    const y2 = y - 5 + 40;
 
-    let x1 = final_door_size_x - 5 + 55 - 22;
-    let y1 = final_door_size_y - 5 + 40 - 22;
-    let x2 = final_door_size_x - 5 + 55;
-    let y2 = final_door_size_y - 5 + 40;
+    const lock1_center = 120;
+    const lock2_center = y2 - 120;
+    const lock_x1 = 75;
+    const lock_x2 = 75 + 95;
+    const lock1_y1 = lock1_center - 18;
+    const lock1_y2 = lock1_center + 18;
+    const lock2_y1 = lock2_center - 18;
+    const lock2_y2 = lock2_center + 18;
 
-    let lock1_center = 120;
-    let lock2_center = y2 - 120;
-    let lock_x1 = 75;
-    let lock_x2 = 75 + 95;
-    let lock1_y1 = lock1_center - 18;
-    let lock1_y2 = lock1_center + 18;
-    let lock2_y1 = lock2_center - 18;
-    let lock2_y2 = lock2_center + 18;
-
-    return `(MANNY G-CODE)\n\n` +
-           `G21 G90 G49 G64 G40\n` +
-           `G17\n` +
-           `S1000\n\n` +
-           `(GO TO START)\n` +
-           `G0 X${lock_x1}. Y${lock1_y1}.\n\n` +
-           `(START CUTTING)\n` +
-           `G0 Z1.0\n` +
-           `M3\n` +
-           `G1 F300.0 Z-0.4\n` +
-           `F2100.0\n\n` +
-           `(COORDINATES)\n` +
-           `G1 X${lock_x2}. Y${lock1_y1}.\n` +
-           `G1 X${lock_x2}. Y${lock1_y2}.\n` +
-           `G1 X${lock_x1}. Y${lock1_y2}.\n` +
-           `G1 X${lock_x1}. Y${lock1_y1}.\n\n` +
-           `(STOP CUTTING)\n` +
-           `M5\n` +
-           `G0 Z10.0\n\n` +
-           `(GO TO START)\n` +
-           `G0 X${lock_x1}. Y${lock2_y1}.\n\n` +
-           `(START CUTTING)\n` +
-           `G0 Z1.0\n` +
-           `M3\n` +
-           `G1 F300.0 Z-0.4\n` +
-           `F2100.0\n\n` +
-           `(COORDINATES)\n` +
-           `G1 X${lock_x2}. Y${lock2_y1}.\n` +
-           `G1 X${lock_x2}. Y${lock2_y2}.\n` +
-           `G1 X${lock_x1}. Y${lock2_y2}.\n` +
-           `G1 X${lock_x1}. Y${lock2_y1}.\n\n` +
-           `(STOP CUTTING)\n` +
-           `M5\n` +
-           `G0 Z10.0\n\n` +
-           `(GO TO START)\n` +
-           `G0 X${p0}. Y${p1}.\n\n` +
-           `(START CUTTING)\n` +
-           `G0 Z1.0\n` +
-           `M3\n` +
-           `G1 F300.0 Z-0.4\n` +
-           `F2100.0\n\n` +
-           `(COORDINATES)\n` +
-           `G1 X${p2}. Y${p1}.\n` +
-           `G1 X${p2}. Y${p0}.\n` +
-           `G1 X${x1}. Y${p0}.\n` +
-           `G1 X${x1}. Y${p1}.\n` +
-           `G1 X${x2}. Y${p1}.\n` +
-           `G1 X${x2}. Y${y1}.\n` +
-           `G1 X${x2}. Y${y2}.\n` +
-           `G1 X${x1}. Y${y2}.\n` +
-           `G1 X${x1}. Y${y1}.\n\n` +
-           `(STOP CUTTING)\n` +
-           `M5\n` +
-           `G0 Z10.0\n`;
+    return sprintf(`(MANNY G-CODE)\n\n` +
+        `G21 G90 G49 G64 G40\n` +
+        `G17\n` +
+        `S1000\n\n` +
+        `(GO TO START)\n` +
+        `G0 X${lock_x1}. Y${lock1_y1}.\n\n` +
+        `(START CUTTING)\n` +
+        `G0 Z1.0\n` +
+        `M3\n` +
+        `G1 F300.0 Z-0.4\n` +
+        `F2100.0\n\n` +
+        `(COORDINATES)\n` +
+        `G1 X${lock_x2}. Y${lock1_y1}.\n` +
+        `G1 X${lock_x2}. Y${lock1_y2}.\n` +
+        `G1 X${lock_x1}. Y${lock1_y2}.\n` +
+        `G1 X${lock_x1}. Y${lock1_y1}.\n\n` +
+        `(STOP CUTTING)\n` +
+        `M5\n` +
+        `G0 Z10.0\n\n` +
+        `(GO TO START)\n` +
+        `G0 X${lock_x1}. Y${lock2_y1}.\n\n` +
+        `(START CUTTING)\n` +
+        `G0 Z1.0\n` +
+        `M3\n` +
+        `G1 F300.0 Z-0.4\n` +
+        `F2100.0\n\n` +
+        `(COORDINATES)\n` +
+        `G1 X${lock_x2}. Y${lock2_y1}.\n` +
+        `G1 X${lock_x2}. Y${lock2_y2}.\n` +
+        `G1 X${lock_x1}. Y${lock2_y2}.\n` +
+        `G1 X${lock_x1}. Y${lock2_y1}.\n\n` +
+        `(STOP CUTTING)\n` +
+        `M5\n` +
+        `G0 Z10.0\n\n` +
+        `(GO TO START)\n` +
+        `G0 X${p0}. Y${p1}.\n\n` +
+        `(START CUTTING)\n` +
+        `G0 Z1.0\n` +
+        `M3\n` +
+        `G1 F300.0 Z-0.4\n` +
+        `F2100.0\n\n` +
+        `(COORDINATES)\n` +
+        `G1 X${p2}. Y${p1}.\n` +
+        `G1 X${p2}. Y${p0}.\n` +
+        `G1 X${x1}. Y${p0}.\n` +
+        `G1 X${x1}. Y${p1}.\n` +
+        `G1 X${x2}. Y${p1}.\n` +
+        `G1 X${x2}. Y${y1}.\n` +
+        `G1 X${x1}. Y${y1}.\n` +
+        `G1 X${x1}. Y${y2}.\n` +
+        `G1 X${p2}. Y${y2}.\n` +
+        `G1 X${p2}. Y${y1}.\n` +
+        `G1 X${p0}. Y${y1}.\n` +
+        `G1 X${p0}. Y${p1}.`);
 }
 
-function generateTrayGCode(x, y) {
-    // G-code generation logic for tray
-    let tray_size_x = x;
-    let tray_size_y = y;
+function trayfunc(x, y) {
+    const t1 = 50;
+    const t2 = t1 * 2;
 
-    let t1 = 50;
-    let t2 = t1 * 2;
+    const tray_flat_size_x = x + t1 * 2;
+    const tray_flat_size_y = y + t2 * 2;
 
-    let tray_flat_size_x = tray_size_x + t1 * 3;
-    let tray_flat_size_y = tray_size_y + t1 * 2;
-
-    let x1 = tray_flat_size_x - t1;
-    let y1 = tray_flat_size_y - t1;
-    let x2 = tray_flat_size_x;
-    let y2 = tray_flat_size_y;
-
-    return `(MANNY G-CODE)\n\n` +
-           `G21 G90 G49 G64 G40\n` +
-           `G17\n` +
-           `S1000\n\n` +
-           `(GO TO START)\n` +
-           `G0 X0. Y${t1}.\n\n` +
-           `(START CUTTING)\n` +
-           `G0 Z1.0\n` +
-           `M3\n` +
-           `G1 F300.0 Z-0.4\n` +
-           `F2100.0\n\n` +
-           `(COORDINATES)\n` +
-           `G1 X${t2}. Y${t1}.\n` +
-           `G1 X${t2}. Y0.\n` +
-           `G1 X${x1}. Y0.\n` +
-           `G1 X${x1}. Y${t1}.\n` +
-           `G1 X${x2}. Y${t1}.\n` +
-           `G1 X${x2}. Y${y1}.\n` +
-           `G1 X${x2}. Y${y2}.\n` +
-           `G1 X${x1}. Y${y2}.\n` +
-           `G1 X${x1}. Y${y1}.\n` +
-           `G1 X0. Y${y1}.\n` +
-           `G1 X0. Y${t1}.\n\n` +
-           `(STOP CUTTING)\n` +
-           `M5\n` +
-           `G0 Z10.0\n`;
+    return sprintf(`(MANNY G-CODE FOR TRAY)\n\n` +
+        `G21 G90 G49 G64 G40\n` +
+        `G17\n` +
+        `S1000\n\n` +
+        `(GO TO START)\n` +
+        `G0 X0 Y0\n` +
+        `G0 Z1.0\n` +
+        `M3\n` +
+        `G1 F300.0 Z-0.4\n` +
+        `F2100.0\n\n` +
+        `(COORDINATES)\n` +
+        `G1 X${tray_flat_size_x} Y0\n` +
+        `G1 X${tray_flat_size_x} Y${tray_flat_size_y}\n` +
+        `G1 X0 Y${tray_flat_size_y}\n` +
+        `G1 X0 Y0\n\n` +
+        `(STOP CUTTING)\n` +
+        `M5\n` +
+        `G0 Z10.0\n\n` +
+        `(END)\n`);
 }
 
-// Initial display setup
-showSection("door");
+// Utility function to format strings for G-code
+function sprintf() {
+    return Array.from(arguments).join('');
+}
+
+// Show the door section by default
+showSection('door');
