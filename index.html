@@ -13,43 +13,45 @@
             <p>Generate G-Code for different components</p>
         </header>
 
-        <section class="selection-section">
+        <div class="component-selection">
             <label>
                 <input type="radio" name="component" value="door" checked onclick="showSection('door')"> Door
             </label>
             <label>
                 <input type="radio" name="component" value="tray" onclick="showSection('tray')"> Tray
             </label>
-        </section>
+        </div>
 
-        <!-- Door G-Code Section -->
         <section id="door-section" class="input-section">
-            <h2>Generate G-Code for Door</h2>
-            <label for="door-width">Door Width (x):</label>
-            <input type="number" id="door-width" placeholder="Enter door width">
-
-            <label for="door-height">Door Height (y):</label>
-            <input type="number" id="door-height" placeholder="Enter door height">
-
-            <button onclick="generateGCode('door')">Generate G-Code for Door</button>
+            <h2>Door Specifications</h2>
+            <div class="input-group">
+                <label for="door-width">Width (x):</label>
+                <input type="number" id="door-width" placeholder="Enter door width">
+            </div>
+            <div class="input-group">
+                <label for="door-height">Height (y):</label>
+                <input type="number" id="door-height" placeholder="Enter door height">
+            </div>
+            <button class="generate-button" onclick="generateGCode('door')">Generate G-Code</button>
         </section>
 
-        <!-- Tray G-Code Section -->
         <section id="tray-section" class="input-section" style="display:none;">
-            <h2>Generate G-Code for Tray</h2>
-            <label for="tray-length">Tray Length (x):</label>
-            <input type="number" id="tray-length" placeholder="Enter tray length">
-
-            <label for="tray-width">Tray Width (y):</label>
-            <input type="number" id="tray-width" placeholder="Enter tray width">
-
-            <button onclick="generateGCode('tray')">Generate G-Code for Tray</button>
+            <h2>Tray Specifications</h2>
+            <div class="input-group">
+                <label for="tray-length">Length (x):</label>
+                <input type="number" id="tray-length" placeholder="Enter tray length">
+            </div>
+            <div class="input-group">
+                <label for="tray-width">Width (y):</label>
+                <input type="number" id="tray-width" placeholder="Enter tray width">
+            </div>
+            <button class="generate-button" onclick="generateGCode('tray')">Generate G-Code</button>
         </section>
 
         <section class="output-section">
             <h2>Generated G-Code:</h2>
             <pre id="gcode-output" class="output"></pre>
-            <button onclick="downloadGCode()">Download G-Code</button>
+            <button class="download-button" onclick="downloadGCode()">Download G-Code</button>
         </section>
     </div>
 
